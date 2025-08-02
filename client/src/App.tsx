@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, Heart, MessageCircle, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Heart, MessageCircle, Plus } from 'lucide-react';
 import { trpc } from '@/utils/trpc';
 import type { Post, CreatePostInput, Comment, CreateCommentInput } from '../../server/src/schema';
 
@@ -436,7 +436,68 @@ function App() {
             </div>
           </div>
         ) : currentPost ? (
-          <div className="p-4">
+          <div className="p-4 md:p-20 relative">
+            {/* Desktop Navigation Buttons */}
+            <div className="hidden md:block">
+              {/* Top Arrow - Next Post */}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setCurrentPostIndex(prev => Math.min(prev + 1, posts.length - 1))}
+                disabled={currentPostIndex >= posts.length - 1}
+                className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 shadow-lg z-10"
+                title="Next post"
+              >
+                <ArrowUp className="w-5 h-5 text-blue-600" />
+              </Button>
+
+              {/* Left Arrow - Unlike */}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  if (likedPosts.has(currentPost.id)) {
+                    handleLike(currentPost.id, true);
+                  }
+                }}
+                disabled={!likedPosts.has(currentPost.id)}
+                className="absolute top-1/2 -left-16 transform -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border-2 border-gray-200 hover:border-red-400 hover:bg-red-50 shadow-lg z-10 disabled:opacity-50"
+                title="Unlike post"
+              >
+                <ArrowLeft className="w-5 h-5 text-red-600" />
+              </Button>
+
+              {/* Right Arrow - Like */}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  if (!likedPosts.has(currentPost.id)) {
+                    handleLike(currentPost.id, false);
+                  }
+                }}
+                disabled={likedPosts.has(currentPost.id)}
+                className="absolute top-1/2 -right-16 transform -translate-y-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border-2 border-gray-200 hover:border-green-400 hover:bg-green-50 shadow-lg z-10 disabled:opacity-50"
+                title="Like post"
+              >
+                <ArrowRight className="w-5 h-5 text-green-600" />
+              </Button>
+
+              {/* Bottom Arrow - Comments */}
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  setShowComments(true);
+                  loadComments(currentPost.id);
+                }}
+                className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border-2 border-purple-200 hover:border-purple-400 hover:bg-purple-50 shadow-lg z-10"
+                title="View comments"
+              >
+                <ArrowDown className="w-5 h-5 text-purple-600" />
+              </Button>
+            </div>
+
             {/* Post Card */}
             <Card 
               className="bg-white/80 backdrop-blur-sm border-0 shadow-lg min-h-[400px] cursor-pointer select-none"
@@ -483,11 +544,17 @@ function App() {
               </div>
             </Card>
 
-            {/* Swipe Instructions */}
+            {/* Instructions */}
             <div className="mt-6 text-center text-sm text-gray-500 space-y-1">
-              <p>👆 Swipe up for next post</p>
-              <p>👇 Swipe down for comments</p>
-              <p>👈👉 Swipe left/right to like/unlike</p>
+              <div className="md:hidden">
+                <p>👆 Swipe up for next post</p>
+                <p>👇 Swipe down for comments</p>
+                <p>👈👉 Swipe left/right to like/unlike</p>
+              </div>
+              <div className="hidden md:block">
+                <p>Use arrow buttons to navigate and interact with posts</p>
+                <p>↑ Next post • ↓ Comments • ← Unlike • → Like</p>
+              </div>
             </div>
 
             {/* Navigation Dots */}
