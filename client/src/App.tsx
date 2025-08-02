@@ -506,7 +506,7 @@ function App() {
             >
               <div className="p-8 h-full flex flex-col justify-between">
                 <div>
-                  <p className="text-lg text-gray-800 leading-relaxed mb-6">
+                  <p className="text-lg text-gray-800 leading-relaxed mb-6 whitespace-pre-wrap">
                     {currentPost.content}
                   </p>
                 </div>
