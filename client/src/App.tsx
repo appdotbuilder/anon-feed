@@ -255,8 +255,12 @@ function App() {
       // Vertical swipe
       if (Math.abs(deltaY) > minSwipeDistance) {
         if (deltaY < 0) {
-          // Swipe up - next post
-          setCurrentPostIndex(prev => Math.min(prev + 1, posts.length - 1));
+          // Swipe up - next post or create new post if all viewed
+          if (currentPostIndex < posts.length - 1) {
+            setCurrentPostIndex(prev => prev + 1);
+          } else {
+            setShowCreatePost(true);
+          }
         } else {
           // Swipe down - comments
           if (posts[currentPostIndex]) {
@@ -443,8 +447,13 @@ function App() {
               <Button
                 variant="outline"
                 size="lg"
-                onClick={() => setCurrentPostIndex(prev => Math.min(prev + 1, posts.length - 1))}
-                disabled={currentPostIndex >= posts.length - 1}
+                onClick={() => {
+                  if (currentPostIndex < posts.length - 1) {
+                    setCurrentPostIndex(prev => prev + 1);
+                  } else {
+                    setShowCreatePost(true);
+                  }
+                }}
                 className="absolute -top-16 left-1/2 transform -translate-x-1/2 w-12 h-12 rounded-full bg-white/90 backdrop-blur-sm border-2 border-blue-200 hover:border-blue-400 hover:bg-blue-50 shadow-lg z-10"
                 title="Next post"
               >

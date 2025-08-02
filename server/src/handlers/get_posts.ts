@@ -8,7 +8,7 @@ export const getPosts = async (): Promise<Post[]> => {
   try {
     const results = await db.select()
       .from(postsTable)
-      .orderBy(desc(postsTable.created_at))
+      .orderBy(desc(postsTable.like_count), desc(postsTable.created_at)) // Sort by like_count DESC, then created_at DESC
       .execute();
 
     // Return posts with proper type structure
