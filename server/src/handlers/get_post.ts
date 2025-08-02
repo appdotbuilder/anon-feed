@@ -1,13 +1,29 @@
 
+import { db } from '../db';
+import { postsTable } from '../db/schema';
 import { type GetPostInput, type Post } from '../schema';
+import { eq } from 'drizzle-orm';
 
 export const getPost = async (input: GetPostInput): Promise<Post | null> => {
-    // This is a placeholder declaration! Real code should be implemented here.
-    // The goal of this handler is fetching a single post by ID from the database.
-    return Promise.resolve({
-        id: input.id,
-        content: "Sample post content",
-        like_count: 0,
-        created_at: new Date()
-    } as Post);
+  try {
+    const result = await db.select()
+      .from(postsTable)
+      .where(eq(postsTable.id, input.id))
+      .execute();
+
+    if (result.length === 0) {
+      return null;
+    }
+
+    const post = result[0];
+    return {
+      id: post.id,
+      content: post.content,
+      like_count: post.like_count,
+      created_at: post.created_at
+    };
+  } catch (error) {
+    console.error('Get post failed:', error);
+    throw error;
+  }
 };
