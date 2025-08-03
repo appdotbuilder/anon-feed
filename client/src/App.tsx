@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
-import { ArrowLeft, ArrowRight, ArrowUp, ArrowDown, Heart, MessageCircle, Plus } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowUp, ArrowDown, MessageCircle, Plus, ThumbsUp, ThumbsDown } from 'lucide-react';
 import { trpc } from '@/utils/trpc';
 import type { Post, CreatePostInput, Comment, CreateCommentInput } from '../../server/src/schema';
 
@@ -300,7 +300,11 @@ function App() {
             <p className="text-gray-800 leading-relaxed">{currentPost.content}</p>
             <div className="flex items-center gap-4 mt-4 text-sm text-gray-500">
               <span className="flex items-center gap-1">
-                <Heart className="w-4 h-4" />
+                {likedPosts.has(currentPost.id) ? (
+                  <ThumbsDown className="w-4 h-4" />
+                ) : (
+                  <ThumbsUp className="w-4 h-4" />
+                )}
                 {currentPost.like_count}
               </span>
               <span>{currentPost.created_at.toLocaleDateString()}</span>
@@ -533,11 +537,11 @@ function App() {
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                       }`}
                     >
-                      <Heart 
-                        className={`w-5 h-5 ${
-                          likedPosts.has(currentPost.id) ? 'fill-current' : ''
-                        }`} 
-                      />
+                      {likedPosts.has(currentPost.id) ? (
+                        <ThumbsDown className="w-5 h-5 fill-current" />
+                      ) : (
+                        <ThumbsUp className="w-5 h-5" />
+                      )}
                       <span className="font-medium">{currentPost.like_count}</span>
                     </Button>
                   </div>
